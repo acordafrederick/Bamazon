@@ -1,3 +1,7 @@
 # Bamazon
 
-![hm gif](/images/bamazon.gif)
+![hm gif](/images/one.gif)
+
+![hm gif](/images/two.gif)
+
+![hm gif](/images/three.gif)
