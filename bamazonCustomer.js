@@ -53,15 +53,44 @@ function askBuyer() {
          		return false;
 	   		}
 	    }])
-		.then(function(answer) {
-			var item = answer.item_id;
-			var quantity = answer.stock_quantity;
+		.then(function(order) {
 			var query = "SELECT * FROM products WHERE ?";
-			connection.query(query, {item_id: item}, function(err, res) {
+			connection.query(query, {item_id: order.item_id}, function(err, res) {
 				if (err) throw err;
-				var 
-			});
-		});
+				if (res[0].stock_quantity - order.stock_quantity >= 0) {
+                    console.log("Bamazon's got enough of \"" + res[0].product_name + "!\"");
+                    console.log("We currently have " + res[0].stock_quantity + " in our stock, compared to your order of " + order.stock_quantity + " unit/s!");
+                    console.log("You've been billed with the total of $" + (order.stock_quantity * res[0].price));
+                    // connection.query("UPDATE products SET stock_quantity=? WHERE id=?",
+                    // 	[res[0].stock_quantity - order.stock_quantity, order.item_id], function(err) {
+                    // 		if (err) throw error;
+                    // 		console.log("Your order has been processed!");
+                    // 		option();
+                    // 	});
+                    option();
+                }
+                else {
+                    console.log("Insufficient quantity.  Please order less of that item, as Bamazon only has " + res[0].stock_quantity + " " + res[0].product_name + " in stock at this moment.");
+                    option();
+                }
+            });
+        });
+};
+
+function option() {
+	inquirer.prompt({
+		name: "confirm",
+		type: "confirm",
+		message: "Continue Shopping?",
+		default: true
+	}).then(function(response) {
+		if (response.confirm === true) {
+			runForSale();
+		}
+		else {
+			console.log("Thanks For Shopping. 'Til Next Time!");
+		}
+	})
 }
 
 
